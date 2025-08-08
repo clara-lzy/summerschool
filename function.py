@@ -157,3 +157,19 @@ def normsig4psd(sig_vec, samp_freq, psd_vec, snr):
     norm_sig_vec = norm_fac * sig_vec
     
     return norm_sig_vec, norm_fac
+
+
+
+def glrtqcsig(time_vec,data_vec, fs,psd_vec,qcCoefs):
+
+    "calculate the GLRT for a quadratic chirp signal with unknown amplitude"
+    'psd_vec: for positive DFT frequencies'
+    
+    # Generate unit norm template
+    sig_vec = crcbgenqcsig(time_vec, 1, qcCoefs)
+    templateVec, _ = normsig4psd(sig_vec, fs, psd_vec, 1)
+
+    # Calculate inner product of data with unit norm template
+    llr = innerprod_psd(data_vec, templateVec, fs, psd_vec)
+
+    return llr**2
